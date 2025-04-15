@@ -7,7 +7,7 @@ import javax.ejb.Stateless;
 
 import business.room.RoomDTO;
 import domainevent.command.handler.BaseHandler;
-import domainevent.command.handler.EventHandler;
+import domainevent.command.handler.CommandPublisher;
 import msa.commons.event.EventData;
 import msa.commons.event.EventId;
 import msa.commons.microservices.hotelbooking.commandevent.CreateHotelBookingCommand;
@@ -15,11 +15,11 @@ import msa.commons.microservices.hotelroom.qualifier.ValidateRoomsByEventCreateB
 
 @Stateless
 @ValidateRoomsByEventCreateBookingQualifier
-@Local(EventHandler.class)
+@Local(CommandPublisher.class)
 public class ValidateRoomsByEventCreateBookingHandler extends BaseHandler {
 
     @Override
-    public void handleCommand(String json) {
+    public void publishCommand(String json) {
         EventData eventData = EventData.fromJson(json, CreateHotelBookingCommand.class);
         CreateHotelBookingCommand command = (CreateHotelBookingCommand) eventData.getData();
         List<String> roomIds = command.getRoomIds();

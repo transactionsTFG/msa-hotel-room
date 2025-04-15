@@ -12,7 +12,7 @@ import com.google.gson.Gson;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import domainevent.command.handler.EventHandler;
+import domainevent.command.handler.CommandPublisher;
 import domainevent.registry.EventHandlerRegistry;
 import msa.commons.consts.JMSQueueNames;
 import msa.commons.event.Event;
@@ -43,9 +43,9 @@ public class DomainEventConsumerRoomService implements MessageListener {
                 LOGGER.info("Recibido en cola {}, Evento Id: {}, Mensaje: {}",
                         JMSQueueNames.AGENCY_HOTEL_ROOM_SERVICE_QUEUE,
                         event.getEventId(), event.getValue().toString());
-                EventHandler handler = this.eventHandlerRegistry.getHandler(event.getEventId());
+                CommandPublisher handler = this.eventHandlerRegistry.getHandler(event.getEventId());
                 if (handler != null)
-                    handler.handleCommand(this.gson.toJson(event.getValue()));
+                    handler.publishCommand(this.gson.toJson(event.getValue()));
             }
         } catch (Exception e) {
             LOGGER.error("Error al recibir el mensaje: {}", e.getMessage());
