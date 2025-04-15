@@ -19,6 +19,7 @@ import lombok.ToString;
 @NamedQueries({
         @NamedQuery(name = "business.room.getByRoomNumber", query = "SELECT r FROM Room r WHERE r.number = :number"),
         @NamedQuery(name = "business.room.getAllRoomsByHotel", query = "SELECT r, r.hotelId FROM Room r WHERE (:hotelId is NULL OR r.hotelId = :hotelId)"),
+        @NamedQuery(name = "business.room.getAllRooms", query = "SELECT r FROM Room r")
 })
 @AllArgsConstructor
 @NoArgsConstructor
@@ -46,5 +47,7 @@ public class Room implements Serializable {
     private int peopleNumber;
 
     private double dailyPrice;
+
+    private String sagaId;
 
 }

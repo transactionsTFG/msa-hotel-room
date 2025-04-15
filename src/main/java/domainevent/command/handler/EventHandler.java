@@ -1,5 +1,5 @@
 package domainevent.command.handler;
 
 public interface EventHandler {
-    void handleCommand(Object event);
+    void handleCommand(String json);
 }

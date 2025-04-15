@@ -6,6 +6,8 @@ import javax.inject.Inject;
 import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.TextMessage;
+import javax.transaction.Transactional;
+
 import com.google.gson.Gson;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -33,15 +35,17 @@ public class DomainEventConsumerRoomService implements MessageListener {
     }
 
     @Override
+    @Transactional
     public void onMessage(Message msg) {
         try {
             if (msg instanceof TextMessage m) {
                 Event event = this.gson.fromJson(m.getText(), Event.class);
-                LOGGER.info("Recibido en cola {}, Evento Id: {}, Mensaje: {}", JMSQueueNames.AGENCY_HOTEL_ROOM_SERVICE_QUEUE,
-                        event.getEventId(), event.getData().toString());
+                LOGGER.info("Recibido en cola {}, Evento Id: {}, Mensaje: {}",
+                        JMSQueueNames.AGENCY_HOTEL_ROOM_SERVICE_QUEUE,
+                        event.getEventId(), event.getValue().toString());
                 EventHandler handler = this.eventHandlerRegistry.getHandler(event.getEventId());
-                if (handler != null) 
-                    handler.handleCommand(event.getData());
+                if (handler != null)
+                    handler.handleCommand(this.gson.toJson(event.getValue()));
             }
         } catch (Exception e) {
             LOGGER.error("Error al recibir el mensaje: {}", e.getMessage());
