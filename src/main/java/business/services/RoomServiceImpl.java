@@ -10,6 +10,7 @@ import javax.persistence.LockModeType;
 import business.exceptions.RoomException;
 import business.mapper.RoomMapper;
 import business.room.Room;
+import msa.commons.microservices.hotelroom.commandevent.model.RoomInfo;
 import business.room.RoomDTO;
 
 @Stateless
@@ -26,13 +27,13 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public void updateSagaId(List<String> roomIds, String sagaId) {
+    public void updateSagaId(List<RoomInfo> roomsInfo, String sagaId) {
 
-        roomIds.forEach(id -> {
-            Room room = entityManager.find(Room.class, Long.parseLong(id), LockModeType.OPTIMISTIC);
+        roomsInfo.forEach(roomInfo -> {
+            Room room = entityManager.find(Room.class, Long.parseLong(roomInfo.getRoomId()));
 
             if (room == null || !room.isAvailable())
-                throw new RoomException("Room with id" + id + " is either null or is not available.");
+                throw new RoomException("Room with id" + roomInfo + " is either null or is not available.");
 
             room.setSagaId(sagaId);
             this.entityManager.merge(room);

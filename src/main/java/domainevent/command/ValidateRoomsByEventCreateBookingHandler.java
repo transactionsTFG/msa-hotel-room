@@ -11,6 +11,7 @@ import domainevent.command.handler.CommandPublisher;
 import msa.commons.event.EventData;
 import msa.commons.event.EventId;
 import msa.commons.microservices.hotelbooking.commandevent.CreateHotelBookingCommand;
+import msa.commons.microservices.hotelroom.commandevent.model.RoomInfo;
 import msa.commons.microservices.hotelroom.qualifier.ValidateRoomsByEventCreateBookingQualifier;
 
 @Stateless
@@ -22,7 +23,7 @@ public class ValidateRoomsByEventCreateBookingHandler extends BaseHandler {
     public void publishCommand(String json) {
         EventData eventData = EventData.fromJson(json, CreateHotelBookingCommand.class);
         CreateHotelBookingCommand command = (CreateHotelBookingCommand) eventData.getData();
-        List<String> roomIds = command.getRoomIds();
+        List<RoomInfo> roomIds = command.getRoomsInfo();
 
         List<RoomDTO> roomDTOs = this.roomService.readAllRooms();
         this.roomService.updateSagaId(roomIds, eventData.getSagaId());
