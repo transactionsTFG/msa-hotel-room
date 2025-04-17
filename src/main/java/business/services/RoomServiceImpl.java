@@ -42,6 +42,23 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
+    public boolean validateRooms(List<RoomInfo> rooms) {
+
+        for (RoomInfo roomInfo : rooms) {
+
+            Room room = this.entityManager.find(Room.class, Long.parseLong(roomInfo.getRoomId()),
+                    LockModeType.OPTIMISTIC);
+
+            if (room == null || !room.isAvailable()) {
+                return false;
+            }
+
+        }
+
+        return true;
+    }
+
+    @Override
     public RoomDTO readRoomById(long roomId) {
         Room room = entityManager.find(Room.class, roomId, LockModeType.OPTIMISTIC);
 

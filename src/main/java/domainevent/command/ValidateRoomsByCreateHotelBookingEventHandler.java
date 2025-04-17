@@ -12,12 +12,12 @@ import msa.commons.event.EventData;
 import msa.commons.event.EventId;
 import msa.commons.microservices.hotelbooking.commandevent.CreateHotelBookingCommand;
 import msa.commons.microservices.hotelroom.commandevent.model.RoomInfo;
-import msa.commons.microservices.hotelroom.qualifier.ValidateRoomsByEventCreateBookingQualifier;
+import msa.commons.microservices.hotelroom.qualifier.ValidateRoomsByCreateHotelBookingEventQualifier;
 
 @Stateless
-@ValidateRoomsByEventCreateBookingQualifier
+@ValidateRoomsByCreateHotelBookingEventQualifier
 @Local(CommandPublisher.class)
-public class ValidateRoomsByEventCreateBookingHandler extends BaseHandler {
+public class ValidateRoomsByCreateHotelBookingEventHandler extends BaseHandler {
 
     @Override
     public void publishCommand(String json) {
@@ -29,9 +29,9 @@ public class ValidateRoomsByEventCreateBookingHandler extends BaseHandler {
         this.roomService.updateSagaId(roomIds, eventData.getSagaId());
 
         if (roomDTOs.isEmpty()) {
-            this.jmsEventPublisher.publish(EventId.ROLLBACK_CREATE_HOTEL_BOOKING, eventData);
+            this.jmsEventPublisher.publish(EventId.CANCEL_VALIDATE_HOTEL_ROOMS_BY_CREATE_HOTEL_BOOKING, eventData);
         } else {
-            this.jmsEventPublisher.publish(EventId.COMMIT_CREATE_HOTEL_BOOKING, eventData);
+            this.jmsEventPublisher.publish(EventId.CONFIRM_VALIDATE_HOTEL_ROOMS_BY_CREATE_HOTEL_BOOKING, eventData);
         }
     }
 
