@@ -28,7 +28,8 @@ public class RoomServiceImpl implements RoomService {
 
     @Override
     public void updateSagaId(List<RoomInfo> roomsInfo, String sagaId) {
-
+        if (roomsInfo == null)
+            return;
         roomsInfo.forEach(roomInfo -> {
             Room room = entityManager.find(Room.class, Long.parseLong(roomInfo.getRoomId()));
 
@@ -43,7 +44,8 @@ public class RoomServiceImpl implements RoomService {
 
     @Override
     public boolean validateRooms(List<RoomInfo> rooms) {
-
+        if (rooms == null)
+            return false;
         for (RoomInfo roomInfo : rooms) {
 
             Room room = this.entityManager.find(Room.class, Long.parseLong(roomInfo.getRoomId()),

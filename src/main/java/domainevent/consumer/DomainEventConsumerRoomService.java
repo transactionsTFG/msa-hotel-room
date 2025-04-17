@@ -17,7 +17,7 @@ import domainevent.registry.EventHandlerRegistry;
 import msa.commons.consts.JMSQueueNames;
 import msa.commons.event.Event;
 
-@MessageDriven(mappedName = JMSQueueNames.AGENCY_HOTEL_ROOM_SERVICE_QUEUE)
+@MessageDriven(mappedName = JMSQueueNames.HOTEL_ROOM_QUEUE)
 public class DomainEventConsumerRoomService implements MessageListener {
 
     private Gson gson;
@@ -41,7 +41,7 @@ public class DomainEventConsumerRoomService implements MessageListener {
             if (msg instanceof TextMessage m) {
                 Event event = this.gson.fromJson(m.getText(), Event.class);
                 LOGGER.info("Recibido en cola {}, Evento Id: {}, Mensaje: {}",
-                        JMSQueueNames.AGENCY_HOTEL_ROOM_SERVICE_QUEUE,
+                        JMSQueueNames.HOTEL_ROOM_QUEUE,
                         event.getEventId(), event.getValue().toString());
                 CommandPublisher handler = this.eventHandlerRegistry.getHandler(event.getEventId());
                 if (handler != null)
