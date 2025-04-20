@@ -33,8 +33,10 @@ public class RoomServiceImpl implements RoomService {
         roomsInfo.forEach(roomInfo -> {
             Room room = entityManager.find(Room.class, Long.parseLong(roomInfo.getRoomId()));
 
-            if (room == null || !room.isAvailable())
-                throw new RoomException("Room with id" + roomInfo + " is either null or is not available.");
+            if (room == null || !room.isAvailable()) {
+                return;
+                // throw new RoomException("Room with id" + roomInfo + " is either null or is not available.");
+            }
 
             room.setSagaId(sagaId);
             this.entityManager.merge(room);

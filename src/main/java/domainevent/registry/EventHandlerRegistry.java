@@ -12,6 +12,7 @@ import domainevent.command.handler.CommandPublisher;
 
 import msa.commons.event.EventId;
 import msa.commons.microservices.hotelroom.qualifier.ValidateHotelRoomsByCreateHotelBookingQualifier;
+import msa.commons.microservices.hotelroom.qualifier.ValidateHotelRoomsByUpdateHotelBookingEventQualifier;
 
 @Singleton
 @Startup
@@ -19,10 +20,12 @@ public class EventHandlerRegistry {
     private Map<EventId, CommandPublisher> handlers = new EnumMap<>(EventId.class);
 
     private CommandPublisher validateHotelRoomsByCreateHotelBooking;
+    private CommandPublisher validateHotelRoomsByUpdateHotelBooking;
 
     @PostConstruct
     public void init() {
         this.handlers.put(EventId.VALIDATE_HOTEL_ROOMS_BY_CREATE_HOTEL_BOOKING, validateHotelRoomsByCreateHotelBooking);
+        this.handlers.put(EventId.VALIDATE_HOTEL_ROOMS_BY_UPDATE_HOTEL_BOOKING, validateHotelRoomsByUpdateHotelBooking);
     }
 
     public CommandPublisher getHandler(EventId eventId) {
@@ -33,6 +36,12 @@ public class EventHandlerRegistry {
     public void setValidateHotelRoomsByCreateHotelBooking(
             @ValidateHotelRoomsByCreateHotelBookingQualifier CommandPublisher validateHotelRoomsByCreateHotelBookingQualifier) {
         this.validateHotelRoomsByCreateHotelBooking = validateHotelRoomsByCreateHotelBookingQualifier;
+    }
+
+    @Inject
+    public void setValidateHotelRoomsByUpdateHotelBooking(
+            @ValidateHotelRoomsByUpdateHotelBookingEventQualifier CommandPublisher validateHotelRoomsByUpdateHotelBookingQualifier) {
+        this.validateHotelRoomsByUpdateHotelBooking = validateHotelRoomsByUpdateHotelBookingQualifier;
     }
 
 }
