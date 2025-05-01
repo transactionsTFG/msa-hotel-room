@@ -8,11 +8,11 @@ import javax.ejb.Singleton;
 import javax.ejb.Startup;
 import javax.inject.Inject;
 
+import business.qualifier.ValidateHotelRoomsByCreateHotelBookingQualifier;
+import business.qualifier.ValidateHotelRoomsByUpdateHotelBookingEventQualifier;
 import domainevent.command.handler.CommandPublisher;
 
 import msa.commons.event.EventId;
-import msa.commons.microservices.hotelroom.qualifier.ValidateHotelRoomsByCreateHotelBookingQualifier;
-import msa.commons.microservices.hotelroom.qualifier.ValidateHotelRoomsByUpdateHotelBookingEventQualifier;
 
 @Singleton
 @Startup
