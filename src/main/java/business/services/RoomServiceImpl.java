@@ -7,11 +7,10 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.LockModeType;
 
-import business.exceptions.RoomException;
 import business.mapper.RoomMapper;
 import business.room.Room;
-import msa.commons.microservices.hotelroom.commandevent.model.RoomInfo;
 import business.room.RoomDTO;
+import msa.commons.microservices.hotelroom.commandevent.model.RoomInfo;
 
 @Stateless
 public class RoomServiceImpl implements RoomService {
