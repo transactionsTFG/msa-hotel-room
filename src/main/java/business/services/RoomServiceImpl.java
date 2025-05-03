@@ -10,7 +10,7 @@ import javax.persistence.LockModeType;
 import business.mapper.RoomMapper;
 import business.room.Room;
 import business.room.RoomDTO;
-import msa.commons.microservices.hotelroom.commandevent.model.RoomInfo;
+import msa.commons.commands.hotelroom.model.RoomInfo;
 
 @Stateless
 public class RoomServiceImpl implements RoomService {

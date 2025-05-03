@@ -8,13 +8,13 @@ import javax.ejb.Stateless;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import business.qualifier.ValidateHotelRoomsByCreateHotelBookingQualifier;
 import domainevent.command.handler.BaseHandler;
 import domainevent.command.handler.CommandPublisher;
+import msa.commons.commands.hotelbooking.CreateHotelBookingCommand;
+import msa.commons.commands.hotelroom.model.RoomInfo;
 import msa.commons.event.EventData;
 import msa.commons.event.EventId;
-import msa.commons.microservices.hotelbooking.commandevent.CreateHotelBookingCommand;
-import msa.commons.microservices.hotelroom.commandevent.model.RoomInfo;
-import msa.commons.microservices.hotelroom.qualifier.ValidateHotelRoomsByCreateHotelBookingQualifier;
 
 @Stateless
 @ValidateHotelRoomsByCreateHotelBookingQualifier
