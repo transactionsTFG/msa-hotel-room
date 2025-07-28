@@ -1,12 +1,18 @@
 package business.room;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Version;
+
+import business.hotel.Hotel;
+
 import java.io.Serializable;
 
 import lombok.AllArgsConstructor;
@@ -18,7 +24,7 @@ import lombok.ToString;
 @Entity
 @NamedQueries({
         @NamedQuery(name = "business.room.getByRoomNumber", query = "SELECT r FROM Room r WHERE r.number = :number"),
-        @NamedQuery(name = "business.room.getAllRoomsByHotel", query = "SELECT r, r.hotelId FROM Room r WHERE (:hotelId is NULL OR r.hotelId = :hotelId)"),
+        @NamedQuery(name = "business.room.getAllRoomsByHotel",query = "SELECT r FROM Room r WHERE (:hotelId IS NULL OR r.hotel.id = :hotelId)"),
         @NamedQuery(name = "business.room.getAllRooms", query = "SELECT r FROM Room r")
 })
 @AllArgsConstructor
@@ -26,9 +32,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class Room implements Serializable {
-
-    private static final long serialVersionUID = 0;
+public class Room {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,7 +40,9 @@ public class Room implements Serializable {
     @Version
     private int version;
 
-    private String hotelId;
+    @ManyToOne
+    @JoinColumn(name = "hotel_id")
+    private Hotel hotel;
 
     private int number;
 
