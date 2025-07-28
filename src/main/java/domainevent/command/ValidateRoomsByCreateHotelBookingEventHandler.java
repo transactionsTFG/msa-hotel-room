@@ -9,6 +9,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import business.qualifier.ValidateHotelRoomsByCreateHotelBookingQualifier;
+import business.room.RoomDTO;
 import domainevent.command.handler.BaseHandler;
 import domainevent.command.handler.CommandPublisher;
 import msa.commons.commands.hotelbooking.CreateHotelBookingCommand;
@@ -36,6 +37,10 @@ public class ValidateRoomsByCreateHotelBookingEventHandler extends BaseHandler {
         if (!roomsValidated) {
             this.jmsEventPublisher.publish(EventId.CANCEL_VALIDATE_HOTEL_ROOMS_BY_CREATE_HOTEL_BOOKING, eventData);
         } else {
+            command.getRoomsInfo().forEach(r -> {
+                RoomDTO roomDTO = this.roomService.readRoomById(Long.parseLong(r.getRoomId()));
+                r.setDailyPrice(roomDTO.getDailyPrice());
+            });
             this.jmsEventPublisher.publish(EventId.CONFIRM_VALIDATE_HOTEL_ROOMS_BY_CREATE_HOTEL_BOOKING, eventData);
         }
     }
