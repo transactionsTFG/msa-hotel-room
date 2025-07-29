@@ -37,12 +37,13 @@ public class ValidateRoomsByUpdateHotelBookingEvent extends BaseHandler {
         this.roomService.updateSagaId(roomIds, eventData.getSagaId());
         
         if (!roomsValidated) {
+            this.jmsEventPublisher.publish(EventId.CANCEL_VALIDATE_HOTEL_ROOMS_BY_UPDATE_HOTEL_BOOKING, eventData);
+        } else {
             for (RoomInfo roomInfo : roomIds) {
                 RoomDTO r = this.roomService.readRoomById(Long.parseLong(roomInfo.getRoomId()));
                 roomInfo.setDailyPrice(r.getDailyPrice());
             }
-            this.jmsEventPublisher.publish(EventId.CANCEL_VALIDATE_HOTEL_ROOMS_BY_UPDATE_HOTEL_BOOKING, eventData);
-        } else {
+            command.setRoomsInfo(roomIds);
             this.jmsEventPublisher.publish(EventId.CONFIRM_VALIDATE_HOTEL_ROOMS_BY_UPDATE_HOTEL_BOOKING, eventData);
         }
     }
