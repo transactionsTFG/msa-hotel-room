@@ -25,7 +25,9 @@ import lombok.ToString;
 @NamedQueries({
         @NamedQuery(name = "business.room.getByRoomNumber", query = "SELECT r FROM Room r WHERE r.number = :number"),
         @NamedQuery(name = "business.room.getAllRoomsByHotel",query = "SELECT r FROM Room r WHERE (:hotelId IS NULL OR r.hotel.id = :hotelId)"),
-        @NamedQuery(name = "business.room.getAllRooms", query = "SELECT r FROM Room r")
+        @NamedQuery(name = "business.room.getAllRooms", query = "SELECT r FROM Room r"),
+        @NamedQuery(name = "business.room.getRoomsByHotelAndCountry",
+                query = "SELECT r FROM Room r JOIN r.hotel h JOIN h.countries c WHERE (:hotelName IS NULL OR h.name = :hotelName) AND (:countryId IS NULL OR c.id = :countryId)")
 })
 @AllArgsConstructor
 @NoArgsConstructor

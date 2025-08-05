@@ -7,23 +7,22 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.LockModeType;
 
+import org.eclipse.persistence.internal.sessions.DirectCollectionChangeRecord.NULL;
+
+import business.external.country.CountryClient;
+import business.external.country.CountryDTO;
 import business.mapper.RoomMapper;
 import business.room.Room;
 import business.room.RoomDTO;
+import business.room.RoomInfoDTO;
 import msa.commons.commands.hotelroom.model.RoomInfo;
+import weblogic.informix.jdbc.base.ge;
 
 @Stateless
 public class RoomServiceImpl implements RoomService {
 
     private EntityManager entityManager;
-
-    public RoomServiceImpl() {
-    }
-
-    @Inject
-    public RoomServiceImpl(EntityManager entityManager) {
-        this.entityManager = entityManager;
-    }
+    private CountryClient countryClient;
 
     @Override
     public void updateSagaId(List<RoomInfo> roomsInfo, String sagaId) {
@@ -78,9 +77,40 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public List<RoomDTO> readRoomsByHotelAndCountry(String hotel, String country) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'readRoomsByHotelAndCountry'");
+    public List<RoomInfoDTO> readRoomsByHotelAndCountry(String hotel, String country) {
+        Long idCountry = null;
+        if (country != null)
+            idCountry = this.countryClient.getCountryName(country).getId();
+        
+
+        return this.entityManager.createNamedQuery("business.room.getRoomsByHotelAndCountry", Room.class)
+                .setParameter("hotelName", hotel)
+                .setParameter("countryId", idCountry)
+                .getResultList().stream()
+                .map((entity) -> { 
+                    RoomDTO r = RoomMapper.INSTANCE.entityToDTO(entity);
+                    RoomInfoDTO roomInfoDTO = new RoomInfoDTO();
+                    roomInfoDTO.setHotelName(entity.getHotel().getName());
+                    roomInfoDTO.setCountry(this.countryClient.getCountryById(entity.getHotel().getCountries().iterator().next().getCountryId()).getName());
+                    roomInfoDTO.setId(r.getId());
+                    roomInfoDTO.setHotelId(r.getHotelId());
+                    roomInfoDTO.setNumber(r.getNumber());
+                    roomInfoDTO.setSingleBed(r.isSingleBed());
+                    roomInfoDTO.setAvailable(r.isAvailable());
+                    roomInfoDTO.setPeopleNumber(r.getPeopleNumber());
+                    roomInfoDTO.setDailyPrice(r.getDailyPrice());
+                    return roomInfoDTO;
+                })
+                .toList();
+
     }
 
+    @Inject
+    public void setEntityManager(EntityManager entityManager) {
+        this.entityManager = entityManager;
+    }
+    @Inject
+    public void setCountryClient(CountryClient countryClient) {
+        this.countryClient = countryClient;
+    }
 }

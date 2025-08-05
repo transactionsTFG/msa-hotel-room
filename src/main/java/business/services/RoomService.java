@@ -3,6 +3,7 @@ package business.services;
 import java.util.List;
 
 import business.room.RoomDTO;
+import business.room.RoomInfoDTO;
 import msa.commons.commands.hotelroom.model.RoomInfo;
 
 public interface RoomService {
@@ -14,5 +15,5 @@ public interface RoomService {
 
     List<RoomDTO> readAllRooms();
 
-    List<RoomDTO> readRoomsByHotelAndCountry(String hotel, String country);
+    List<RoomInfoDTO> readRoomsByHotelAndCountry(String hotel, String country);
 }

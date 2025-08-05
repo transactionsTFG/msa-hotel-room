@@ -12,4 +12,5 @@ public interface RoomMapper {
 
     RoomDTO entityToDTO(Room room);
 
+    
 }
