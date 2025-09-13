@@ -80,6 +80,7 @@ public class RoomServiceImpl implements RoomService {
     @Override
     public List<RoomInfoDTO> readRoomsByHotelAndCountry(String hotel, final String country) {
         CountryDTO countryDTO = null;
+        final String hotelName = (hotel == null || hotel.isBlank()) ? null : hotel;
         if (country != null && !country.isBlank()) {
             countryDTO = this.countryClient.getCountryName(country);
             if (countryDTO == null) {
@@ -91,7 +92,7 @@ public class RoomServiceImpl implements RoomService {
            
 
         List<Room> roomInfoDTOs = this.entityManager.createNamedQuery("business.room.getRoomsByHotelAndCountry", Room.class)
-                .setParameter("hotelName", hotel)
+                .setParameter("hotelName", hotelName)
                 .setParameter("countryId", countryDTO == null ? null : countryDTO.getId())
                 .getResultList();
 
