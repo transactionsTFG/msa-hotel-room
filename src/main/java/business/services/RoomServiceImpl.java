@@ -102,9 +102,9 @@ public class RoomServiceImpl implements RoomService {
             RoomInfoDTO roomInfoDTO = new RoomInfoDTO();
             roomInfoDTO.setHotelName(entity.getHotel().getName());
             if (countryDTO != null) 
-                roomInfoDTO.setCountry(countryDTO.getName());
+                roomInfoDTO.setCountryName(countryDTO.getName());
             else 
-                roomInfoDTO.setCountry(this.countryClient.getCountryById(entity.getHotel().getCountries().iterator().next().getCountryId()).getName());
+                roomInfoDTO.setCountryName(this.countryClient.getCountryById(entity.getHotel().getCountries().iterator().next().getCountryId()).getName());
             roomInfoDTO.setId(r.getId());
             roomInfoDTO.setHotelId(r.getHotelId());
             roomInfoDTO.setNumber(r.getNumber());

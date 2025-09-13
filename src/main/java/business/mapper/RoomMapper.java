@@ -1,6 +1,7 @@
 package business.mapper;
 
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
 import business.room.Room;
@@ -10,6 +11,7 @@ import business.room.RoomDTO;
 public interface RoomMapper {
     RoomMapper INSTANCE = Mappers.getMapper(RoomMapper.class);
 
+    @Mapping(target = "hotelId", source = "hotel.id")
     RoomDTO entityToDTO(Room room);
 
     
