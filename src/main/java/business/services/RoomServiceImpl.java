@@ -1,5 +1,6 @@
 package business.services;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.ejb.Stateless;
@@ -77,32 +78,36 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public List<RoomInfoDTO> readRoomsByHotelAndCountry(String hotel, String country) {
-        Long idCountry = null;
-        if (country != null)
-            idCountry = this.countryClient.getCountryName(country).getId();
-        
+    public List<RoomInfoDTO> readRoomsByHotelAndCountry(String hotel, final String country) {
+        CountryDTO countryDTO = null;
+        if (country != null && !country.isBlank())
+            countryDTO = this.countryClient.getCountryName(country);
 
-        return this.entityManager.createNamedQuery("business.room.getRoomsByHotelAndCountry", Room.class)
+        List<Room> roomInfoDTOs = this.entityManager.createNamedQuery("business.room.getRoomsByHotelAndCountry", Room.class)
                 .setParameter("hotelName", hotel)
-                .setParameter("countryId", idCountry)
-                .getResultList().stream()
-                .map((entity) -> { 
-                    RoomDTO r = RoomMapper.INSTANCE.entityToDTO(entity);
-                    RoomInfoDTO roomInfoDTO = new RoomInfoDTO();
-                    roomInfoDTO.setHotelName(entity.getHotel().getName());
-                    roomInfoDTO.setCountry(this.countryClient.getCountryById(entity.getHotel().getCountries().iterator().next().getCountryId()).getName());
-                    roomInfoDTO.setId(r.getId());
-                    roomInfoDTO.setHotelId(r.getHotelId());
-                    roomInfoDTO.setNumber(r.getNumber());
-                    roomInfoDTO.setSingleBed(r.isSingleBed());
-                    roomInfoDTO.setAvailable(r.isAvailable());
-                    roomInfoDTO.setPeopleNumber(r.getPeopleNumber());
-                    roomInfoDTO.setDailyPrice(r.getDailyPrice());
-                    return roomInfoDTO;
-                })
-                .toList();
+                .setParameter("countryId", countryDTO == null ? null : countryDTO.getId())
+                .getResultList();
 
+        List<RoomInfoDTO> result = new ArrayList<>();
+        for (Room entity : roomInfoDTOs) {
+            RoomDTO r = RoomMapper.INSTANCE.entityToDTO(entity);
+            RoomInfoDTO roomInfoDTO = new RoomInfoDTO();
+            roomInfoDTO.setHotelName(entity.getHotel().getName());
+            if (countryDTO != null) 
+                roomInfoDTO.setCountry(countryDTO.getName());
+            else 
+                roomInfoDTO.setCountry(this.countryClient.getCountryById(entity.getHotel().getCountries().iterator().next().getCountryId()).getName());
+            roomInfoDTO.setId(r.getId());
+            roomInfoDTO.setHotelId(r.getHotelId());
+            roomInfoDTO.setNumber(r.getNumber());
+            roomInfoDTO.setSingleBed(r.isSingleBed());
+            roomInfoDTO.setAvailable(r.isAvailable());
+            roomInfoDTO.setPeopleNumber(r.getPeopleNumber());
+            roomInfoDTO.setDailyPrice(r.getDailyPrice());
+            result.add(roomInfoDTO);
+        }
+
+        return result;
     }
 
     @Inject
